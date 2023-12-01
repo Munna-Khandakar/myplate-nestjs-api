@@ -28,18 +28,35 @@ export class AddressService {
     return addresses;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
+  async findOne(id: string): Promise<Address> {
+    const addresses = await this.addressModel.findById(id);
+    return addresses;
   }
 
-  updateEverythingWithoutState(
-    id: number,
+  async updateEverythingWithoutState(
+    id: string,
     updateAddressDto: UpdateAddressWithoutStateDto,
   ) {
-    // get the adress
-    // keep the id,createAt,selected states
-    // update the rest
-    return `This action updates a #${id} address`;
+    const address = await this.addressModel.findById(id);
+    const updatedAddress = {};
+
+    // Copy the current values of the address
+    Object.assign({}, updatedAddress, address);
+
+    // Update only the fields that have changed
+    Object.keys(updateAddressDto).forEach((field) => {
+      if (updateAddressDto[field] !== updatedAddress[field]) {
+        updatedAddress[field] = updateAddressDto[field];
+      }
+    });
+
+    // Update the address document
+    const savedData = await this.addressModel.findByIdAndUpdate(
+      id,
+      updatedAddress,
+      { new: true },
+    );
+    return savedData;
   }
 
   update(id: number, updateAddressDto: UpdateAddressDto) {

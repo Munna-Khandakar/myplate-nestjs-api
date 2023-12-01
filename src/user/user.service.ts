@@ -11,6 +11,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
+import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 
 @Injectable()
 export class UserService {
@@ -64,6 +65,17 @@ export class UserService {
         `An error occurred while retrieving users: ${error.message}`,
       );
       throw new Error('An error occurred while retrieving users');
+    }
+  }
+
+  async getMe(id: string): Promise<User> {
+    try {
+      const userDocument = await this.userModel.findById(id);
+      const user = userDocument.toObject();
+      delete user.password;
+      return user;
+    } catch {
+      throw HttpErrorByCode;
     }
   }
 

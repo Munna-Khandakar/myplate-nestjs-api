@@ -3,8 +3,9 @@ import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User as UserDec } from './user.decorator';
 
-@Controller('api/auth')
+@Controller('api')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -30,5 +31,11 @@ export class UserController {
   @UseGuards(AuthGuard)
   async getUsers(): Promise<User[]> {
     return this.userService.getUsers();
+  }
+
+  @Get('users/me')
+  @UseGuards(AuthGuard)
+  async getMe(@UserDec() user): Promise<User> {
+    return this.userService.getMe(user?.userId);
   }
 }

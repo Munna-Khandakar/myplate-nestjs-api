@@ -36,8 +36,9 @@ export class AddressController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
-    return this.addressService.findOne(+id);
+    return this.addressService.findOne(id);
   }
 
   @Patch(':id')
@@ -49,12 +50,13 @@ export class AddressController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   updateEverythingWithoutState(
     @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressWithoutStateDto,
   ) {
     return this.addressService.updateEverythingWithoutState(
-      +id,
+      id,
       updateAddressDto,
     );
   }
