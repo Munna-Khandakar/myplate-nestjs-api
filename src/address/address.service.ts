@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
-import { UpdateAddressDto } from './dto/update-address.dto';
+import {
+  UpdateAddressDto,
+  UpdateAddressWithoutStateDto,
+} from './dto/update-address.dto';
 import { Address } from './entities/address.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,8 +15,11 @@ export class AddressService {
     private addressModel: Model<Address>,
   ) {}
 
-  async create(createAddressDto: CreateAddressDto) {
-    const address = new this.addressModel(createAddressDto);
+  async create(createAddressDto: CreateAddressDto, user) {
+    const address = new this.addressModel({
+      ...createAddressDto,
+      user: user.userId,
+    });
     return address.save();
   }
 
@@ -24,6 +30,16 @@ export class AddressService {
 
   findOne(id: number) {
     return `This action returns a #${id} address`;
+  }
+
+  updateEverythingWithoutState(
+    id: number,
+    updateAddressDto: UpdateAddressWithoutStateDto,
+  ) {
+    // get the adress
+    // keep the id,createAt,selected states
+    // update the rest
+    return `This action updates a #${id} address`;
   }
 
   update(id: number, updateAddressDto: UpdateAddressDto) {
