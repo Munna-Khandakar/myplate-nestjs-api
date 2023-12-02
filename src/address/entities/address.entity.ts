@@ -1,16 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { User } from 'src/user/entities/user.entity';
 
 @Schema({
   timestamps: true,
 })
 export class Address {
   @Prop({
-    required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })
-  user: string;
+  user: User;
   @Prop({ required: true })
   title: string;
   @Prop({ required: true, default: false })

@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PlatesModule } from './plates/plates.module';
 import { AddressModule } from './address/address.module';
 import { UserModule } from './user/user.module';
+import { ResponseFormatInterceptor } from './interceptors/responseFormat.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -21,6 +23,12 @@ import { UserModule } from './user/user.module';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseFormatInterceptor,
+    },
+  ],
 })
 export class AppModule {}

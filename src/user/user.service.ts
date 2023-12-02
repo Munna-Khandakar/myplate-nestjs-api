@@ -69,14 +69,11 @@ export class UserService {
   }
 
   async getMe(id: string): Promise<User> {
-    try {
-      const userDocument = await this.userModel.findById(id);
-      const user = userDocument.toObject();
-      delete user.password;
-      return user;
-    } catch {
-      throw HttpErrorByCode;
-    }
+    const userDocument = await this.userModel.findById(id).populate('address');
+
+    // const user = userDocument.toObject();
+    // delete user.password;
+    return userDocument;
   }
 
   findAll() {
