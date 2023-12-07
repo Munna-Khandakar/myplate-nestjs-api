@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateOtpDto, CreateUserDto } from './dto/create-user.dto';
 import { User as UserDec } from './user.decorator';
 
 @Controller('api')
@@ -10,11 +10,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  async registerUser(
-    @Body() body: { username: string; password: string },
-  ): Promise<{ message: string }> {
+  async registerUser(@Body() body): Promise<{ message: string }> {
     const { username, password } = body;
-    await this.userService.registerUser({ username, password });
+    await this.userService.registerUser(body);
     return { message: 'User registered successfully' };
   }
 
@@ -22,8 +20,7 @@ export class UserController {
   async loginUser(
     @Body() body: CreateUserDto,
   ): Promise<{ message: string; token: string }> {
-    const { username, password } = body;
-    const token = await this.userService.loginUser({ username, password });
+    const token = await this.userService.loginUser(body);
     return { message: 'Login successful', token };
   }
 

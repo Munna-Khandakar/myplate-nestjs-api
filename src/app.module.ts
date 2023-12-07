@@ -9,6 +9,8 @@ import { AddressModule } from './address/address.module';
 import { UserModule } from './user/user.module';
 import { ResponseFormatInterceptor } from './interceptors/responseFormat.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CategoryModule } from './category/category.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     PlatesModule,
     AddressModule,
     UserModule,
+    CategoryModule,
+    OtpModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,4 +1,4 @@
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateOtpDto, CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   Injectable,
@@ -70,9 +70,6 @@ export class UserService {
 
   async getMe(id: string): Promise<User> {
     const userDocument = await this.userModel.findById(id).populate('address');
-
-    // const user = userDocument.toObject();
-    // delete user.password;
     return userDocument;
   }
 

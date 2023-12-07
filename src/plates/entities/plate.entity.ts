@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Address } from 'src/address/entities/address.entity';
+import { Category } from 'src/category/entities/category.entity';
 
 @Schema({
   timestamps: true,
@@ -11,15 +13,15 @@ export class Plate {
   @Prop({ required: true, type: String })
   description: string;
 
-  @Prop({ required: true, type: String })
-  images: string[];
+  @Prop({ required: true })
+  images: [string];
 
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   })
-  category: string;
+  category: Category;
 
   @Prop({ type: Number || null })
   quantity: number;
@@ -29,22 +31,10 @@ export class Plate {
 
   @Prop({
     required: true,
-    type: Object,
-  })
-  address: {
-    id: string;
-    title: string;
-    description: string;
-    lat: number | null;
-    long: number | null;
-  };
-
-  @Prop({
-    required: true,
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Delivery',
+    ref: 'Address',
   })
-  delivery: string;
+  address: Address;
 }
 
 export const PlateSchema = SchemaFactory.createForClass(Plate);

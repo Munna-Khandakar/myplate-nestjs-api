@@ -13,25 +13,13 @@ import { PlatesService } from './plates.service';
 import { CreatePlateDto } from './dto/create-plate.dto';
 import { UpdatePlateDto } from './dto/update-plate.dto';
 
-@Controller('plates')
+@Controller('api/plates')
 export class PlatesController {
   constructor(private readonly platesService: PlatesService) {}
 
   @Post()
-  async create(@Res() response, @Body() createPlateDto: CreatePlateDto) {
-    try {
-      const newPlate = await this.platesService.create(createPlateDto);
-      return response.status(HttpStatus.CREATED).json({
-        message: 'Post has been created successfully',
-        data: newPlate,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error: Post not created!',
-        error: 'Bad Request',
-      });
-    }
+  create(@Body() createPlateDto: CreatePlateDto) {
+    return this.platesService.create(createPlateDto);
   }
 
   @Get()

@@ -1,11 +1,4 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsString,
-  MaxLength,
-} from 'class-validator';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
+import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
 
 export class CreatePlateDto {
   @IsString()
@@ -17,18 +10,22 @@ export class CreatePlateDto {
   @IsNotEmpty()
   readonly description: string;
 
-  @IsString()
   @IsNotEmpty()
-  readonly images: string;
+  readonly images: [string];
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   readonly category: string;
 
   @IsNumber()
   @IsNotEmpty()
-  readonly quantity: string;
+  readonly quantity: number;
 
-  @IsObject()
-  readonly address: CreateAddressDto;
+  @IsString()
+  @IsNotEmpty()
+  readonly address: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly price: number;
 }

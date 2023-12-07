@@ -11,7 +11,7 @@ export class User {
   password: string;
 
   @Prop()
-  address: [Address];
+  phone: string;
 }
 
 export type UserDocument = User & Document;
