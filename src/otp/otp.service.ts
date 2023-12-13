@@ -1,13 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateOtpDto } from './dto/create-otp.dto';
 import { UpdateOtpDto } from './dto/update-otp.dto';
 import * as request from 'request';
 import * as otpGenerator from 'otp-generator';
 import { ConfigService } from '@nestjs/config';
+import { Otp } from './entities/otp.entity';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class OtpService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @InjectModel(Otp.name)
+    private otpModel: Model<Otp>,
+    private readonly configService: ConfigService,
+  ) {}
 
   getUsername(): string {
     return this.configService.get('BULKSMSDB_USERNAME');
@@ -49,9 +56,46 @@ export class OtpService {
 
   async create(createOtpDto: CreateOtpDto) {
     const otpCode = this.generateOtp();
-    // save to db
     const message = `Your MyPlate OTP code is: ${otpCode}`;
-    return this.sendSms(createOtpDto.phone, message);
+
+    try {
+      // Check if existing OTP exists for the phone number
+      const existingOtp = await this.otpModel.findOne({
+        phone: createOtpDto.phone,
+      });
+
+      if (existingOtp) {
+        // Update existing OTP with new code only if it's not verified yet
+        if (!existingOtp.isVerified) {
+          existingOtp.code = otpCode;
+          await existingOtp.save();
+          console.log(`Updated existing OTP for phone: ${createOtpDto.phone}`);
+          this.sendSms(createOtpDto.phone, message);
+          return { message: 'OTP code sent' };
+        } else {
+          console.log(
+            `Existing OTP is already verified for phone: ${createOtpDto.phone}`,
+          );
+          return { messagemsg: 'this phone number is already verified' }; // Customize response message
+        }
+      } else {
+        // No existing OTP found, create a new one
+        const savedOtp = await new this.otpModel({
+          phone: createOtpDto.phone,
+          isVerified: false,
+          code: otpCode,
+        }).save();
+        console.log(`Created new OTP for phone: ${createOtpDto.phone}`);
+        savedOtp; // Optional: Utilize the saved OTP object for further processing
+        this.sendSms(createOtpDto.phone, message);
+      }
+
+      return { message: 'OTP code sent' };
+    } catch (error) {
+      // Handle error and return appropriate response
+      console.error(error);
+      return { message: 'error', error: error.message };
+    }
   }
 
   findAll() {

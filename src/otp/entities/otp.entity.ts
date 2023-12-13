@@ -3,11 +3,14 @@ import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Otp {
-  @Prop()
+  @Prop({ required: true, type: String })
   phone: string;
 
+  @Prop({ required: true, type: Boolean })
+  isVerified: boolean;
+
   @Prop()
-  isVerified: string;
+  code: string;
 }
 
 export type OtpDocument = Otp & Document;
