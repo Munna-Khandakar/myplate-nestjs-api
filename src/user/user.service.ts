@@ -1,4 +1,4 @@
-import { CreateOtpDto, CreateUserDto } from './dto/create-user.dto';
+import { CreateOtpDto, CreateUserDto, LoginDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   Injectable,
@@ -12,12 +12,14 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import { Otp } from 'src/otp/entities/otp.entity';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Otp.name) private otpModel: Model<Otp>,
     private jwtService: JwtService,
   ) {}
   create(createUserDto: CreateUserDto) {
@@ -27,16 +29,30 @@ export class UserService {
     createUserDto: CreateUserDto,
   ): Promise<{ message: string }> {
     try {
-      const { username, password } = createUserDto;
+      const { username, password, phone, otp } = createUserDto;
+      console.log({ createUserDto });
+      const existingUser = await this.userModel.find({ phone });
+      console.log({ existingUser });
+      if (existingUser.length > 0) {
+        console.log('already');
+        return new NotFoundException();
+      }
+      const otpRes = await this.otpModel.findOne({ phone, code: otp });
+      console.log({ otpRes });
+      if (!otpRes) {
+        throw new NotFoundException('Otp Verification Failed');
+      }
+      otpRes.isVerified = true;
+      await otpRes.save();
       const hash = await bcrypt.hash(password, 10);
-      await this.userModel.create({ username, password: hash });
-      return { message: 'User registered successfully' };
+      await this.userModel.create({ username, password: hash, phone });
+      return { message: 'Registration completed' };
     } catch (error) {
       throw new Error('An error occurred while registering the user');
     }
   }
 
-  async loginUser(createUserDto: CreateUserDto): Promise<string> {
+  async loginUser(createUserDto: LoginDto): Promise<string> {
     try {
       const { username, password } = createUserDto;
       const user = await this.userModel.findOne({ username });
@@ -52,7 +68,7 @@ export class UserService {
       return token;
     } catch (error) {
       console.log(error);
-      throw new UnauthorizedException('An error occurred while logging in');
+      throw new UnauthorizedException('Invalid login credentials');
     }
   }
 

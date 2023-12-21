@@ -5,10 +5,14 @@ import { UserSchema } from './entities/user.entity';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { OtpSchema } from 'src/otp/entities/otp.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: 'User', schema: UserSchema },
+      { name: 'Otp', schema: OtpSchema },
+    ]),
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

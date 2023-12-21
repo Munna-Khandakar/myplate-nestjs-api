@@ -4,13 +4,13 @@ import { Address } from 'src/address/entities/address.entity';
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop()
+  @Prop({ required: true })
   username: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true })
   phone: string;
 }
 

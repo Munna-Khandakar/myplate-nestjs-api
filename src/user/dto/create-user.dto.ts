@@ -17,6 +17,16 @@ export class CreateUserDto {
   readonly otp: string;
 }
 
+export class LoginDto {
+  @IsString()
+  @IsNotEmpty()
+  readonly password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly username: string;
+}
+
 export class CreateOtpDto {
   @IsString()
   @IsNotEmpty()

@@ -76,7 +76,7 @@ export class OtpService {
           console.log(
             `Existing OTP is already verified for phone: ${createOtpDto.phone}`,
           );
-          return { messagemsg: 'this phone number is already verified' }; // Customize response message
+          return { message: 'this phone number is already verified' }; // Customize response message
         }
       } else {
         // No existing OTP found, create a new one
