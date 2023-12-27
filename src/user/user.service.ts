@@ -11,7 +11,6 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { Otp } from 'src/otp/entities/otp.entity';
 
 @Injectable()
@@ -30,15 +29,11 @@ export class UserService {
   ): Promise<{ message: string }> {
     try {
       const { username, password, phone, otp } = createUserDto;
-      console.log({ createUserDto });
       const existingUser = await this.userModel.find({ phone });
-      console.log({ existingUser });
       if (existingUser.length > 0) {
-        console.log('already');
         return new NotFoundException();
       }
       const otpRes = await this.otpModel.findOne({ phone, code: otp });
-      console.log({ otpRes });
       if (!otpRes) {
         throw new NotFoundException('Otp Verification Failed');
       }

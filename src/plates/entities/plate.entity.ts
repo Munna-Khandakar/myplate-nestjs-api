@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Address } from 'src/address/entities/address.entity';
 import { Category } from 'src/category/entities/category.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Schema({
   timestamps: true,
@@ -35,6 +36,13 @@ export class Plate {
     ref: 'Address',
   })
   address: Address;
+
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  })
+  host: User;
 }
 
 export const PlateSchema = SchemaFactory.createForClass(Plate);

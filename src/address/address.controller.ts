@@ -25,7 +25,6 @@ export class AddressController {
   @Post()
   @UseGuards(AuthGuard)
   create(@Body() createAddressDto: CreateAddressDto, @User() user) {
-    console.log(user);
     return this.addressService.create(createAddressDto, user);
   }
 

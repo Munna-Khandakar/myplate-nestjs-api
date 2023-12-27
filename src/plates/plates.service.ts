@@ -4,6 +4,7 @@ import { UpdatePlateDto } from './dto/update-plate.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Plate } from './entities/plate.entity';
 import { Model } from 'mongoose';
+import { PlateQuery } from './types/Plate';
 
 @Injectable()
 export class PlatesService {
@@ -11,14 +12,32 @@ export class PlatesService {
     @InjectModel(Plate.name)
     private plateModel: Model<Plate>,
   ) {}
-  async create(createPlateDto: CreatePlateDto): Promise<Plate> {
-    const plate = new this.plateModel(createPlateDto);
+  async create(createPlateDto: CreatePlateDto, user): Promise<Plate> {
+    const plate = new this.plateModel({ ...createPlateDto, host: user.userId });
     return plate.save();
   }
 
-  async findAll(): Promise<Plate[]> {
-    const plates = await this.plateModel.find();
-    return plates;
+  async findAll(
+    params: PlateQuery,
+  ): Promise<{ plates: Plate[]; total: number }> {
+    const query = this.plateModel.find();
+
+    // Apply pagination
+    if (params.page && params.limit) {
+      query.skip((params.page - 1) * params.limit).limit(params.limit);
+    }
+
+    // Apply population
+    if (params.populate) {
+      query.populate(params.populate);
+    }
+
+    const plates = await query;
+
+    // Count total documents (consider using a more optimized approach for large datasets)
+    const total = await this.plateModel.countDocuments();
+
+    return { plates, total };
   }
 
   findOne(id: number) {

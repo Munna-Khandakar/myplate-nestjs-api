@@ -6,25 +6,29 @@ import {
   Patch,
   Param,
   Delete,
-  Res,
-  HttpStatus,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PlatesService } from './plates.service';
 import { CreatePlateDto } from './dto/create-plate.dto';
 import { UpdatePlateDto } from './dto/update-plate.dto';
+import { PlateQuery } from './types/Plate';
+import { AuthGuard } from 'src/user/auth.guard';
+import { User } from 'src/user/user.decorator';
 
 @Controller('api/plates')
 export class PlatesController {
   constructor(private readonly platesService: PlatesService) {}
 
   @Post()
-  create(@Body() createPlateDto: CreatePlateDto) {
-    return this.platesService.create(createPlateDto);
+  @UseGuards(AuthGuard)
+  create(@Body() createPlateDto: CreatePlateDto, @User() user) {
+    return this.platesService.create(createPlateDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.platesService.findAll();
+  findAll(@Query() params: PlateQuery, @User() user) {
+    return this.platesService.findAll(params);
   }
 
   @Get(':id')
