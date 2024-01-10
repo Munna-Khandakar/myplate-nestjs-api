@@ -37,6 +37,12 @@ export class Plate {
   })
   address: Address;
 
+  @Prop({ required: true, type: String })
+  lastTimeToOrder: string;
+
+  @Prop({ type: Boolean, default: false })
+  canOrderAnyTime: boolean;
+
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,

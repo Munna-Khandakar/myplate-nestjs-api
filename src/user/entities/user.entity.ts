@@ -12,6 +12,12 @@ export class User {
 
   @Prop({ required: true, unique: true })
   phone: string;
+
+  @Prop()
+  profilePicture: string;
+
+  @Prop()
+  isVerified: boolean;
 }
 
 export type UserDocument = User & Document;

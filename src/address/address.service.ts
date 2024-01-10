@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAddressDto } from './dto/create-address.dto';
 import {
   UpdateAddressDto,
@@ -23,8 +23,8 @@ export class AddressService {
     return address.save();
   }
 
-  async findAll(): Promise<Address[]> {
-    const addresses = await this.addressModel.find();
+  async findAll(user): Promise<Address[]> {
+    const addresses = await this.addressModel.find({ user: user.userId });
     return addresses;
   }
 
@@ -64,7 +64,14 @@ export class AddressService {
     return `This action updates a #${id} address`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+  async remove(id: string) {
+    const address = await this.addressModel.findById(id);
+
+    if (!address) {
+      throw new NotFoundException(`Address with ID ${id} not found`);
+    }
+    await this.addressModel.findByIdAndDelete(id);
+
+    return address;
   }
 }

@@ -9,9 +9,6 @@ export class CreateAddressDto {
   @IsNotEmpty()
   description: string;
 
-  @IsBoolean()
-  selected: boolean;
-
   @IsOptional()
   lat: number;
 

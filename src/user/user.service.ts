@@ -49,8 +49,8 @@ export class UserService {
 
   async loginUser(createUserDto: LoginDto): Promise<string> {
     try {
-      const { username, password } = createUserDto;
-      const user = await this.userModel.findOne({ username });
+      const { phone, password } = createUserDto;
+      const user = await this.userModel.findOne({ phone });
       if (!user) {
         throw new NotFoundException('User not found');
       }

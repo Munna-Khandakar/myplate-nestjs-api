@@ -11,8 +11,18 @@ export class PlatesService {
   constructor(
     @InjectModel(Plate.name)
     private plateModel: Model<Plate>,
+    @InjectModel('Address') private addressModel: Model<any>,
   ) {}
   async create(createPlateDto: CreatePlateDto, user): Promise<Plate> {
+    const pickeupaAddress = await this.addressModel.findById(
+      createPlateDto.address,
+    );
+
+    if (!pickeupaAddress) {
+      throw new Error('Address not found'); // Throw an error for proper handling
+    }
+    createPlateDto['pickupAddress'] = pickeupaAddress;
+
     const plate = new this.plateModel({ ...createPlateDto, host: user.userId });
     return plate.save();
   }

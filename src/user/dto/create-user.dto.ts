@@ -24,7 +24,7 @@ export class LoginDto {
 
   @IsString()
   @IsNotEmpty()
-  readonly username: string;
+  readonly phone: string;
 }
 
 export class CreateOtpDto {

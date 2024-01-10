@@ -50,8 +50,13 @@ export class OtpService {
     });
   }
 
-  generateOtp(length: number = 6, options?: otpGenerator.GeneratorOptions) {
-    return otpGenerator.generate(length, options);
+  generateOtp(length: number = 4, options?: otpGenerator.GeneratorOptions) {
+    return otpGenerator.generate(length, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
   }
 
   async create(createOtpDto: CreateOtpDto) {

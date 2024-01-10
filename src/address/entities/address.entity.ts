@@ -13,8 +13,6 @@ export class Address {
   user: User;
   @Prop({ required: true })
   title: string;
-  @Prop({ required: true, default: false })
-  selected: boolean;
   @Prop({ required: true })
   description: string;
   @Prop()

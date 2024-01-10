@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreatePlateDto {
   @IsString()
@@ -28,4 +34,12 @@ export class CreatePlateDto {
   @IsNumber()
   @IsNotEmpty()
   readonly price: number;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly lastTimeToOrder: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  readonly canOrderAnyTime: boolean;
 }

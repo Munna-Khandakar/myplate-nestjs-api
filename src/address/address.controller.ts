@@ -30,8 +30,8 @@ export class AddressController {
 
   @Get()
   @UseGuards(AuthGuard)
-  findAll() {
-    return this.addressService.findAll();
+  findAll(@User() user) {
+    return this.addressService.findAll(user);
   }
 
   @Get(':id')
@@ -61,7 +61,8 @@ export class AddressController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   remove(@Param('id') id: string) {
-    return this.addressService.remove(+id);
+    return this.addressService.remove(id);
   }
 }
