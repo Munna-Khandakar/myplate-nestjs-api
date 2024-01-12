@@ -12,6 +12,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
 import { Otp } from 'src/otp/entities/otp.entity';
+import { Address } from 'src/address/entities/address.entity';
+import { Plate } from 'src/plates/entities/plate.entity';
 
 @Injectable()
 export class UserService {
@@ -19,6 +21,8 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Otp.name) private otpModel: Model<Otp>,
+    @InjectModel(Address.name) private addressModel: Model<Address>,
+    @InjectModel(Plate.name) private plateModel: Model<Plate>,
     private jwtService: JwtService,
   ) {}
   create(createUserDto: CreateUserDto) {
@@ -79,9 +83,14 @@ export class UserService {
     }
   }
 
-  async getMe(id: string): Promise<User> {
-    const userDocument = await this.userModel.findById(id).populate('address');
-    return userDocument;
+  async getMe(id: string): Promise<any> {
+    const user = await this.userModel.findById(id);
+    const plateCount = await this.plateModel.countDocuments({ host: id });
+    const recentPosts = await this.plateModel
+      .find({ host: id })
+      .sort({ createdAt: -1 })
+      .limit(5);
+    return { plateCount, user, recentPosts };
   }
 
   findAll() {

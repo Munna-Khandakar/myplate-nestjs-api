@@ -6,12 +6,16 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { OtpSchema } from 'src/otp/entities/otp.entity';
+import { AddressSchema } from 'src/address/entities/address.entity';
+import { PlateSchema } from 'src/plates/entities/plate.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
       { name: 'Otp', schema: OtpSchema },
+      { name: 'Address', schema: AddressSchema },
+      { name: 'Plate', schema: PlateSchema },
     ]),
     ConfigModule.forRoot({
       envFilePath: '.env',

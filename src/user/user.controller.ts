@@ -30,7 +30,7 @@ export class UserController {
 
   @Get('users/me')
   @UseGuards(AuthGuard)
-  async getMe(@UserDec() user): Promise<User> {
+  async getMe(@UserDec() user): Promise<any> {
     return this.userService.getMe(user?.userId);
   }
 }
